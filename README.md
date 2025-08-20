@@ -92,8 +92,8 @@ npm install
 3. Create a .env file in the mobile-app directory with your backend URL:
 
 ```bash
-EXPO_PUBLIC_API_URL=http://192.168.1.106:8000/api
-EXPO_PUBLIC_WS_URL=http://192.168.1.106:8000
+EXPO_PUBLIC_API_URL=https://chat-app-tvkg.onrender.com
+EXPO_PUBLIC_WS_URL=https://chat-app-tvkg.onrender.com
 ```
 
 4. Start the development server:
