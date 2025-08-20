@@ -10,6 +10,8 @@ import getSocket from "../services/socket"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { getStatusIcon } from "@/utils/messageUtils"
 
+const API_URL = "https://chat-app-tvkg.onrender.com"
+
 interface Message {
   _id: string
   content: string
@@ -59,7 +61,7 @@ export default function HomeScreen() {
 
     try {
       console.log("Fetching users...");
-      const res = await axios.get(`http://192.168.1.106:8000/users`, {
+      const res = await axios.get(`${API_URL}/users`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 

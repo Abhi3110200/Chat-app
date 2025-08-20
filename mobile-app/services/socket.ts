@@ -8,7 +8,7 @@ interface CustomSocket extends BaseSocket {
   reconnectAttempts?: number;
 }
 
-const API_URL = "http://192.168.1.106:8000";
+const API_URL = "https://chat-app-tvkg.onrender.com";
 const MAX_RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY = 3000; // 3 seconds
 

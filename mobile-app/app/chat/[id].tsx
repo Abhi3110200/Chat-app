@@ -24,7 +24,7 @@ import { LegendList } from "@legendapp/list"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Ionicons } from "@expo/vector-icons"
 
-const API_URL = "http://192.168.1.106:8000"
+const API_URL = "https://chat-app-tvkg.onrender.com"
 
 interface User {
   _id: string
@@ -614,6 +614,7 @@ export default function ChatScreen() {
           contentContainerStyle={styles.messagesContainer}
           estimatedItemSize={100}
           recycleItems={true}
+          showsVerticalScrollIndicator={true}
           alignItemsAtEnd
           maintainScrollAtEnd
           maintainScrollAtEndThreshold={0.5}

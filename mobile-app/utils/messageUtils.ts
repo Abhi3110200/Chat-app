@@ -14,6 +14,8 @@ type StatusIconReturn = {
   color: string;
 };
 
+const API_URL = "https://chat-app-tvkg.onrender.com"
+
 export const getStatusIcon = (status: string, isOnline: boolean = false): StatusIconReturn => {
   // For sent messages, show different icons based on read status and online status
   if (status === 'sent') {
@@ -49,7 +51,7 @@ export const getStatusIcon = (status: string, isOnline: boolean = false): Status
 
 export const markMessageAsDelivered = async (messageId: string, authToken: string) => {
   try {
-    const response = await fetch(`http://192.168.1.106:8000/message-status/${messageId}/delivered`, {
+    const response = await fetch(`${API_URL}/message-status/${messageId}/delivered`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -70,7 +72,7 @@ export const markMessageAsDelivered = async (messageId: string, authToken: strin
 
 export const markMessageAsRead = async (messageId: string, authToken: string) => {
   try {
-    const response = await fetch(`http://192.168.1.106:8000/message-status/${messageId}/read`, {
+    const response = await fetch(`${API_URL}/message-status/${messageId}/read`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +93,7 @@ export const markMessageAsRead = async (messageId: string, authToken: string) =>
 
 export const markAllMessagesAsRead = async (conversationId: string, authToken: string) => {
   try {
-    const response = await fetch(`http://192.168.1.106:8000/message-status/conversation/${conversationId}/read-all`, {
+    const response = await fetch(`${API_URL}/message-status/conversation/${conversationId}/read-all`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

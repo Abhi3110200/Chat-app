@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // ⚠️ Replace with your backend IP
-const API = axios.create({ baseURL: "http://192.168.1.106:8000" });
+const API = axios.create({ baseURL: "https://chat-app-tvkg.onrender.com" });
 
 // Function to set the auth token
 let authToken: string | null = null;
