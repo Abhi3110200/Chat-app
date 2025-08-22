@@ -243,10 +243,10 @@ export default function ChatScreen() {
         }
 
         // Listen for online status updates
-        const handleOnlineStatus = (status: { 
-          userId: string; 
-          online: boolean; 
-          lastSeen?: Date | string | null 
+        const handleOnlineStatus = (status: {
+          userId: string;
+          online: boolean;
+          lastSeen?: Date | string | null
         }) => {
           console.log("Received status update:", status)
           if (status.userId === chatUserId) {
@@ -256,15 +256,15 @@ export default function ChatScreen() {
             // Update chatUser with all current properties plus the new online status
             setChatUser((prev) => {
               if (!prev) return null;
-              
+
               // Safely handle lastSeen conversion to string
               let lastSeenValue: string | null = null;
               if (status.lastSeen) {
-                lastSeenValue = typeof status.lastSeen === 'string' 
-                  ? status.lastSeen 
+                lastSeenValue = typeof status.lastSeen === 'string'
+                  ? status.lastSeen
                   : status.lastSeen.toISOString();
               }
-              
+
               return {
                 ...prev,
                 online: status.online,
@@ -287,8 +287,8 @@ export default function ChatScreen() {
         socket.on("user:status", handleOnlineStatus)
 
         // Handle message status updates
-        socket.on("message:status", (update: { 
-          messageId: string; 
+        socket.on("message:status", (update: {
+          messageId: string;
           status: 'sent' | 'delivered' | 'read' | 'error';
           deliveredAt?: string;
           readAt?: string;
@@ -299,12 +299,12 @@ export default function ChatScreen() {
               const statusOrder = ['error', 'sending', 'sent', 'delivered', 'read'];
               const currentStatusIndex = statusOrder.indexOf(msg.status);
               const newStatusIndex = statusOrder.indexOf(update.status);
-              
+
               if (newStatusIndex > currentStatusIndex) {
                 const updatedMsg = { ...msg, status: update.status };
-                
+
                 // Update timestamps and flags based on status
-                switch(update.status) {
+                switch (update.status) {
                   case 'delivered':
                     updatedMsg.delivered = true;
                     updatedMsg.deliveredAt = update.deliveredAt || new Date().toISOString();
@@ -319,7 +319,7 @@ export default function ChatScreen() {
                   default:
                     break;
                 }
-                
+
                 return updatedMsg;
               }
             }
@@ -461,7 +461,7 @@ export default function ChatScreen() {
 
     // Generate tempId outside try-catch to ensure it's in scope for both
     const tempId = `temp-${Date.now()}`
-    
+
     try {
       const socket = await getSocket()
       // Notify that user has stopped typing
@@ -486,10 +486,11 @@ export default function ChatScreen() {
 
       // Clear input immediately when sending message
       setState(prev => ({ ...prev, text: "" }));
-      
+
       // Send message via socket
       socket.emit("message:send", messageData, (acknowledgement: any) => {
-        console.log("Server acknowledgement:", acknowledgement)})
+        console.log("Server acknowledgement:", acknowledgement)
+      })
     } catch (error) {
       console.error('Error storing last opened chat:', error);
     }
@@ -516,16 +517,16 @@ export default function ChatScreen() {
           </View>
         );
       }
-      
+
       // If message is delivered but not read (gray double ticks)
-      if (item.status === 'delivered' ) {
+      if (item.status === 'delivered') {
         return (
           <View style={{ flexDirection: 'row', marginLeft: 4, alignItems: 'center' }}>
             <Ionicons name="checkmark-done" size={16} color="rgba(255, 255, 255, 0.5)" />
           </View>
         );
       }
-      
+
       // If message is sent but not delivered (single gray tick)
       if (item.status === 'sent') {
         return (
@@ -534,7 +535,7 @@ export default function ChatScreen() {
           </View>
         );
       }
-      
+
       // If message is still sending (clock icon)
       return (
         <View style={{ marginLeft: 4 }}>
@@ -602,45 +603,47 @@ export default function ChatScreen() {
         </View>
       </View>
 
+
+      <LegendList
+        data={messages}
+        renderItem={renderMessage}
+        keyExtractor={(item: Message, index: number) => `${item._id}-${index}`}
+        contentContainerStyle={styles.messagesContainer}
+        estimatedItemSize={100}
+        recycleItems={true}
+        showsVerticalScrollIndicator={true}
+        alignItemsAtEnd
+        maintainScrollAtEnd
+        maintainScrollAtEndThreshold={0.5}
+        maintainVisibleContentPosition
+        initialScrollIndex={messages.length - 1}
+        ListEmptyComponent={<Text style={styles.emptyListText}>No messages yet</Text>}
+      />
+
+
       <KeyboardAvoidingView
         behavior="padding"
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        // style={{ flex: 1 }}
       >
-        <LegendList
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item: Message, index: number) => `${item._id}-${index}`}
-          contentContainerStyle={styles.messagesContainer}
-          estimatedItemSize={100}
-          recycleItems={true}
-          showsVerticalScrollIndicator={true}
-          alignItemsAtEnd
-          maintainScrollAtEnd
-          maintainScrollAtEndThreshold={0.5}
-          maintainVisibleContentPosition
-          initialScrollIndex={messages.length - 1}
-          ListEmptyComponent={<Text style={styles.emptyListText}>No messages yet</Text>}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={{ minHeight: 40, color: "#FFFFFF", flexGrow: 1, flexShrink: 1 }}
+            value={state.text}
+            onChangeText={handleTextChange}
+            placeholder="Type a message..."
+            placeholderTextColor="#8B8B8B"
+            multiline
+          />
+          <Pressable
+            style={[styles.sendButton, !state.text.trim() && styles.sendButtonDisabled]}
+            onPress={sendMessage}
+            disabled={!state.text.trim()}
+          >
+            <Ionicons name="paper-plane-outline" size={24} color={state.text.trim() ? "#FFFFFF" : "#8B8B8B"} />
+          </Pressable>
+        </View>
       </KeyboardAvoidingView>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={{ minHeight: 40, color: "#FFFFFF", flexGrow: 1, flexShrink: 1 }}
-          value={state.text}
-          onChangeText={handleTextChange}
-          placeholder="Type a message..."
-          placeholderTextColor="#8B8B8B"
-          multiline
-        />
-        <Pressable
-          style={[styles.sendButton, !state.text.trim() && styles.sendButtonDisabled]}
-          onPress={sendMessage}
-          disabled={!state.text.trim()}
-        >
-          <Ionicons name="paper-plane-outline" size={24} color={state.text.trim() ? "#FFFFFF" : "#8B8B8B"} />
-        </Pressable>
-      </View>
     </SafeAreaView>
   )
 }
